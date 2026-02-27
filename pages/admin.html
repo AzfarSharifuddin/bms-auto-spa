@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel — BM's Auto Spa</title>
+    <link rel="stylesheet" href="/css/tokens.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages/admin.css">
+    <link rel="stylesheet" href="/css/pages/landing.css">
+</head>
+
+<body>
+
+    <div class="admin-layout">
+        <!-- Mobile Hamburger -->
+        <button class="hamburger" id="hamburger">
+            <span class="hamburger__line"></span>
+            <span class="hamburger__line"></span>
+            <span class="hamburger__line"></span>
+        </button>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar__header">
+                <div class="sidebar__logo">BM's <span>Auto Spa</span></div>
+                <div class="sidebar__role">Admin Panel</div>
+            </div>
+            <nav class="sidebar__nav">
+                <a class="sidebar__link active" data-page="overview">
+                    <span class="sidebar__icon">📊</span> Overview
+                </a>
+                <a class="sidebar__link" data-page="reports">
+                    <span class="sidebar__icon">📈</span> Sales Reports
+                </a>
+                <a class="sidebar__link" data-page="services">
+                    <span class="sidebar__icon">🧽</span> Services
+                </a>
+                <a class="sidebar__link" data-page="settings">
+                    <span class="sidebar__icon">⚙️</span> Settings
+                </a>
+                <a class="sidebar__link" data-page="history">
+                    <span class="sidebar__icon">📁</span> Booking History
+                </a>
+            </nav>
+            <div class="sidebar__footer">
+                <div class="sidebar__user">
+                    <div class="sidebar__avatar" id="adminAvatar">BM</div>
+                    <div>
+                        <div class="sidebar__name" id="adminName">Admin</div>
+                        <div class="sidebar__logout" id="logoutBtn">Sign out</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+
+            <!-- Overview Page -->
+            <div class="admin-page" id="page-overview">
+                <div class="admin-main__header">
+                    <h1 class="admin-main__title">Overview</h1>
+                    <span style="color:var(--text-secondary); font-size:var(--font-size-sm);" id="overviewDate"></span>
+                </div>
+                <div class="stats-grid" id="overviewStats"></div>
+                <div class="chart-box">
+                    <div class="chart-box__header">
+                        <h3 class="chart-box__title">This Week</h3>
+                    </div>
+                    <div class="chart-area" id="overviewChart"></div>
+                </div>
+            </div>
+
+            <!-- Reports Page -->
+            <div class="admin-page" id="page-reports" style="display:none">
+                <div class="admin-main__header">
+                    <h1 class="admin-main__title">Sales Reports</h1>
+                    <div class="date-range">
+                        <input type="date" class="form-input" id="reportFrom">
+                        <span style="color:var(--text-muted);">to</span>
+                        <input type="date" class="form-input" id="reportTo">
+                        <button class="btn btn--primary btn--sm" id="reportFilter">Filter</button>
+                    </div>
+                </div>
+                <div class="stats-grid" id="reportStats"></div>
+                <div class="table-container">
+                    <div class="table-toolbar">
+                        <span style="font-weight:600;">Transactions</span>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Plate</th>
+                                <th>Service</th>
+                                <th>Amount</th>
+                                <th>Payment</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Services Page -->
+            <div class="admin-page" id="page-services" style="display:none">
+                <div class="admin-main__header">
+                    <h1 class="admin-main__title">Service Packages</h1>
+                    <button class="btn btn--primary btn--sm" id="addServiceBtn">+ Add Package</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th>Sedan</th>
+                                <th>SUV</th>
+                                <th>MPV</th>
+                                <th>Luxury</th>
+                                <th>Active</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="servicesTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div class="admin-page" id="page-settings" style="display:none">
+                <div class="admin-main__header">
+                    <h1 class="admin-main__title">Settings</h1>
+                </div>
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3 class="settings-card__title">🕐 Operating Hours</h3>
+                        <div class="settings-card__body">
+                            <div class="form-group">
+                                <label class="form-label" for="settOpen">Opening Time</label>
+                                <input type="time" id="settOpen" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="settClose">Closing Time</label>
+                                <input type="time" id="settClose" class="form-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-card">
+                        <h3 class="settings-card__title">📊 Capacity</h3>
+                        <div class="settings-card__body">
+                            <div class="form-group">
+                                <label class="form-label" for="settMaxCars">Max Cars Per Slot</label>
+                                <input type="number" id="settMaxCars" class="form-input" min="1" max="20">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="settSlotDuration">Slot Duration (minutes)</label>
+                                <input type="number" id="settSlotDuration" class="form-input" min="15" max="180"
+                                    step="15">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn--primary btn--lg mt-6" id="saveSettingsBtn">Save Settings</button>
+            </div>
+
+            <!-- History Page -->
+            <div class="admin-page" id="page-history" style="display:none">
+                <div class="admin-main__header">
+                    <h1 class="admin-main__title">Booking History</h1>
+                    <div class="search-bar" style="max-width:240px;">
+                        <span class="search-bar__icon">🔍</span>
+                        <input type="text" class="search-bar__input" id="historySearch" placeholder="Search plate…"
+                            autocomplete="off">
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Plate</th>
+                                <th>Customer</th>
+                                <th>Service</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Edit Service Modal -->
+    <div class="modal-overlay" id="serviceModal">
+        <div class="modal">
+            <h3 class="modal__title" id="serviceModalTitle">Edit Service</h3>
+            <form id="serviceForm" style="display:flex; flex-direction:column; gap:var(--space-4);">
+                <input type="hidden" id="svcEditId">
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input type="text" id="svcName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Icon (emoji)</label>
+                    <input type="text" id="svcIcon" class="form-input" maxlength="4">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <input type="text" id="svcDesc" class="form-input">
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-3);">
+                    <div class="form-group">
+                        <label class="form-label">Sedan (RM)</label>
+                        <input type="number" id="svcSedan" class="form-input" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">SUV (RM)</label>
+                        <input type="number" id="svcSUV" class="form-input" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">MPV (RM)</label>
+                        <input type="number" id="svcMPV" class="form-input" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Luxury (RM)</label>
+                        <input type="number" id="svcLuxury" class="form-input" min="0" required>
+                    </div>
+                </div>
+                <div class="modal__actions">
+                    <button type="button" class="btn btn--ghost"
+                        onclick="document.getElementById('serviceModal').classList.remove('open')">Cancel</button>
+                    <button type="submit" class="btn btn--primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <h3 class="modal__title">Delete Record</h3>
+            <div class="modal__body">Are you sure you want to delete this record? This cannot be undone.</div>
+            <div class="modal__actions">
+                <button class="btn btn--ghost"
+                    onclick="document.getElementById('deleteModal').classList.remove('open')">Cancel</button>
+                <button class="btn btn--danger" id="confirmDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/js/admin.js"></script>
+</body>
+
+</html>

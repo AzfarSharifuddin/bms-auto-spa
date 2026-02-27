@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Dashboard — BM's Auto Spa</title>
+    <link rel="stylesheet" href="/css/tokens.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages/dashboard.css">
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Header -->
+        <header class="dash-header">
+            <div class="dash-header__left">
+                <div class="dash-header__logo">BM's <span>Auto Spa</span></div>
+                <span class="dash-header__date" id="dashDate"></span>
+            </div>
+            <div class="dash-header__right">
+                <div class="search-bar">
+                    <span class="search-bar__icon">🔍</span>
+                    <input type="text" class="search-bar__input" id="searchInput" placeholder="Search plate…"
+                        autocomplete="off">
+                </div>
+                <span class="dash-header__count" id="dashCount"></span>
+                <button class="btn btn--ghost btn--sm" id="logoutBtn">Logout</button>
+            </div>
+        </header>
+
+        <!-- Queue Tabs -->
+        <div class="queue-container">
+            <div class="queue-tabs" id="queueTabs"></div>
+            <div id="queueList"></div>
+        </div>
+
+        <!-- FAB -->
+        <button class="fab" id="fabBtn" title="Add Walk-in">+</button>
+
+        <!-- Mobile Bottom Nav -->
+        <nav class="bottom-nav">
+            <div class="bottom-nav__item active" data-tab="queue">
+                <span class="bottom-nav__icon">📋</span>
+                Today
+            </div>
+            <div class="bottom-nav__item" id="bottomNavWalkin">
+                <span class="bottom-nav__icon">➕</span>
+                Walk-in
+            </div>
+            <div class="bottom-nav__item" id="bottomNavLogout">
+                <span class="bottom-nav__icon">🚪</span>
+                Logout
+            </div>
+        </nav>
+
+        <!-- Walk-in Bottom Sheet -->
+        <div class="bottom-sheet-overlay" id="walkinOverlay">
+            <div class="bottom-sheet">
+                <div class="bottom-sheet__handle"></div>
+                <h2 class="bottom-sheet__title">Add Walk-in</h2>
+                <form class="bottom-sheet__form" id="walkinForm">
+                    <div class="form-group">
+                        <label class="form-label" for="walkinPlate">Car Plate Number</label>
+                        <input type="text" id="walkinPlate" class="form-input plate-input" placeholder="e.g. WXY 1234"
+                            required autocomplete="off" style="font-size:var(--font-size-lg);">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="walkinVehicle">Vehicle Type</label>
+                        <select id="walkinVehicle" class="form-select" required>
+                            <option value="Sedan">Sedan</option>
+                            <option value="SUV">SUV</option>
+                            <option value="MPV">MPV</option>
+                            <option value="Luxury/Large">Luxury / Large</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="walkinPackage">Service Package</label>
+                        <select id="walkinPackage" class="form-select" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="walkinName">Customer Name <span
+                                style="color:var(--text-muted); font-weight:400;">(optional)</span></label>
+                        <input type="text" id="walkinName" class="form-input" placeholder="Customer name">
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--block btn--lg">Add to Queue</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal (for Paid) -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal">
+            <h3 class="modal__title">Complete Payment</h3>
+            <div class="modal__body">
+                <p id="paymentInfo"></p>
+                <div style="margin-top: var(--space-4);">
+                    <label class="form-label">Payment Method</label>
+                    <div style="display:flex; gap:var(--space-3); margin-top:var(--space-2);">
+                        <label class="service-card" style="flex:1; padding:var(--space-4); cursor:pointer;"
+                            data-method="Cash">
+                            <input type="radio" name="paymentMethod" value="Cash" checked
+                                style="position:absolute;opacity:0;">
+                            <div style="font-size:20px;">💵</div>
+                            <div style="font-weight:600; font-size:var(--font-size-sm);">Cash</div>
+                        </label>
+                        <label class="service-card" style="flex:1; padding:var(--space-4); cursor:pointer;"
+                            data-method="E-Wallet">
+                            <input type="radio" name="paymentMethod" value="E-Wallet"
+                                style="position:absolute;opacity:0;">
+                            <div style="font-size:20px;">📱</div>
+                            <div style="font-weight:600; font-size:var(--font-size-sm);">E-Wallet</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal__actions">
+                <button class="btn btn--ghost" id="cancelPayment">Cancel</button>
+                <button class="btn btn--primary" id="confirmPayment">Confirm Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/js/dashboard.js"></script>
+</body>
+
+</html>

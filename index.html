@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BM's Auto Spa — Premium car wash booking in Nilai. Book your wash online in seconds.">
+  <title>BM's Auto Spa — Premium Car Care in Nilai</title>
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/pages/landing.css">
+</head>
+<body>
+
+  <!-- Top Nav -->
+  <nav class="topnav">
+    <a href="/" class="topnav__logo">BM's <span>Auto Spa</span></a>
+    <div class="topnav__links">
+      <a href="#booking" class="topnav__link active">Book Now</a>
+      <a href="/pages/status.html" class="topnav__link">Check Status</a>
+      <a href="/pages/login.html" class="topnav__link">Staff Login</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero container">
+    <div class="hero__badge">
+      <span class="hero__badge-dot"></span>
+      Now Open — Nilai
+    </div>
+    <h1 class="hero__title">Premium <span>Car Care</span><br>Made Simple.</h1>
+    <p class="hero__subtitle">Book your wash in seconds. We handle the rest. No queues, no waiting.</p>
+    <div class="hero__cta-group">
+      <a href="#booking" class="btn btn--primary btn--lg">Book Now</a>
+      <a href="/pages/status.html" class="btn btn--secondary btn--lg">Check Status</a>
+    </div>
+  </section>
+
+  <!-- Booking Section -->
+  <section id="booking" class="booking-section container">
+    <div class="section-header">
+      <div class="section-header__label">Book a Wash</div>
+      <h2 class="section-header__title">Reserve your slot.</h2>
+    </div>
+
+    <div class="booking-form">
+      <div class="card">
+        <form id="bookingForm" class="booking-form__grid">
+
+          <!-- Plate Number -->
+          <div class="form-group">
+            <label class="form-label" for="plateNumber">Car Plate Number</label>
+            <input type="text" id="plateNumber" class="form-input plate-input" placeholder="e.g. WXY 1234" required autocomplete="off">
+          </div>
+
+          <!-- Vehicle Type -->
+          <div class="form-group">
+            <label class="form-label" for="vehicleType">Vehicle Type</label>
+            <select id="vehicleType" class="form-select" required>
+              <option value="">Select vehicle type</option>
+              <option value="Sedan">Sedan</option>
+              <option value="SUV">SUV</option>
+              <option value="MPV">MPV</option>
+              <option value="Luxury/Large">Luxury / Large</option>
+            </select>
+          </div>
+
+          <!-- Service Package -->
+          <div class="form-group">
+            <label class="form-label">Service Package</label>
+            <div id="servicePackages" class="service-packages">
+              <!-- JS renders cards -->
+            </div>
+          </div>
+
+          <!-- Date -->
+          <div class="form-group">
+            <label class="form-label" for="bookingDate">Date</label>
+            <input type="date" id="bookingDate" class="form-input" required>
+          </div>
+
+          <!-- Time Slots -->
+          <div class="form-group" id="timeslotGroup" style="display:none">
+            <label class="form-label">Available Time Slots</label>
+            <div id="timeslotGrid" class="timeslot-grid">
+              <!-- JS renders slots -->
+            </div>
+          </div>
+
+          <!-- Customer Info -->
+          <div class="booking-form__row">
+            <div class="form-group">
+              <label class="form-label" for="customerName">Your Name</label>
+              <input type="text" id="customerName" class="form-input" placeholder="Your name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="customerPhone">Phone Number</label>
+              <input type="tel" id="customerPhone" class="form-input" placeholder="e.g. 012-3456789" required>
+            </div>
+          </div>
+
+          <!-- Price Summary -->
+          <div id="priceSummary" style="display:none; text-align:center; padding: var(--space-4) 0; border-top: var(--border-subtle);">
+            <span style="color:var(--text-secondary); font-size:var(--font-size-sm);">Total</span>
+            <div id="priceDisplay" style="font-size:var(--font-size-2xl); font-weight:700; letter-spacing:-0.03em;"></div>
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--lg btn--block" id="submitBtn">
+            Book Now
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer container">
+    <div class="footer__info">
+      <div class="footer__info-item">📍 Nilai, Negeri Sembilan</div>
+      <div class="footer__info-item">🕐 8:00 AM – 6:00 PM</div>
+      <div class="footer__info-item">📞 012-345 6789</div>
+    </div>
+    <div class="footer__copy">© 2026 BM's Auto Spa. All rights reserved.</div>
+  </footer>
+
+  <!-- Confirmation Modal -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal">
+      <h3 class="modal__title">Booking Confirmed ✓</h3>
+      <div class="modal__body" id="confirmBody"></div>
+      <div class="modal__actions">
+        <a href="/pages/status.html" class="btn btn--secondary">Check Status</a>
+        <button class="btn btn--primary" onclick="document.getElementById('confirmModal').classList.remove('open')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/js/booking.js"></script>
+</body>
+</html>

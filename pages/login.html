@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Login — BM's Auto Spa</title>
+    <link rel="stylesheet" href="/css/tokens.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages/login.css">
+</head>
+
+<body>
+
+    <main class="login-page">
+        <div class="login-card">
+            <div class="card">
+                <div class="login__logo">
+                    <div class="login__logo-icon">🚗</div>
+                    <div class="login__logo-text">BM's Auto Spa</div>
+                    <div class="login__tagline">Staff Portal</div>
+                </div>
+
+                <form class="login__form" id="loginForm">
+                    <div class="login__error" id="loginError">Invalid username or password</div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="username">Username</label>
+                        <input type="text" id="username" class="form-input" placeholder="Enter username" required
+                            autocomplete="username">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="Enter password" required
+                            autocomplete="current-password">
+                    </div>
+
+                    <button type="submit" class="btn btn--primary btn--block btn--lg">Sign In</button>
+                </form>
+
+                <div class="login__hint">
+                    Demo credentials:<br>
+                    Admin: <code>admin</code> / <code>admin123</code><br>
+                    Worker: <code>worker</code> / <code>worker123</code>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="/js/auth.js"></script>
+</body>
+
+</html>

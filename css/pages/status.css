@@ -1,0 +1,169 @@
+/* ============================================
+   BM's Auto Spa — Status Lookup (Apple Light)
+   ============================================ */
+
+.status-page {
+    min-height: calc(100vh - var(--header-height));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-8) var(--space-6);
+}
+
+.status-container {
+    max-width: 480px;
+    width: 100%;
+}
+
+.status-container__title {
+    text-align: center;
+    font-size: var(--font-size-2xl);
+    letter-spacing: -0.03em;
+    margin-bottom: var(--space-2);
+}
+
+.status-container__subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-8);
+}
+
+.status-search {
+    display: flex;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+}
+
+.status-search .form-input {
+    flex: 1;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+/* Status Result Card */
+.status-result {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.status-result .card {
+    padding: var(--space-8);
+    box-shadow: var(--shadow-sm);
+}
+
+.status-result__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-6);
+}
+
+.status-result__plate {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.status-result__details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+.status-result__detail {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.status-result__label {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.status-result__value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Status Tracker */
+.status-tracker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--space-6);
+    padding-top: var(--space-6);
+    border-top: var(--border-subtle);
+    gap: 4px;
+}
+
+.status-tracker__step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+}
+
+.status-tracker__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--bg-surface-active);
+    transition: all var(--transition-base);
+}
+
+.status-tracker__dot.active {
+    background: var(--accent-primary);
+    box-shadow: 0 0 0 4px var(--accent-primary-dim);
+}
+
+.status-tracker__dot.done {
+    background: var(--accent-green);
+}
+
+.status-tracker__name {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.status-tracker__name.active {
+    color: var(--accent-primary);
+}
+
+.status-tracker__name.done {
+    color: var(--accent-green);
+}
+
+.status-empty {
+    text-align: center;
+    padding: var(--space-10) 0;
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.status-empty__icon {
+    font-size: 48px;
+    margin-bottom: var(--space-4);
+    opacity: 0.4;
+}
+
+.status-empty__text {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-4);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

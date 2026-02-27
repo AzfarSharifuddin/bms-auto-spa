@@ -1,0 +1,246 @@
+/* ============================================
+   BM's Auto Spa — Landing Page (Apple Light)
+   ============================================ */
+
+/* Hero */
+.hero {
+    padding: var(--space-20) 0 var(--space-16);
+    text-align: center;
+}
+
+.hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px var(--space-4);
+    background: var(--bg-surface);
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-6);
+}
+
+.hero__badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-green);
+}
+
+.hero__title {
+    font-size: var(--font-size-hero);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: var(--space-4);
+    color: var(--text-primary);
+}
+
+.hero__title span {
+    background: linear-gradient(90deg, var(--accent-primary) 0%, #6C5CE7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero__subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    max-width: 480px;
+    margin: 0 auto var(--space-8);
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.hero__cta-group {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Booking Section */
+.booking-section {
+    padding: var(--space-16) 0;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: var(--space-10);
+}
+
+.section-header__label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--accent-primary);
+    margin-bottom: var(--space-2);
+}
+
+.section-header__title {
+    font-size: var(--font-size-2xl);
+    letter-spacing: -0.03em;
+}
+
+.booking-form {
+    max-width: var(--max-width-narrow);
+    margin: 0 auto;
+}
+
+.booking-form .card {
+    padding: var(--space-8);
+    box-shadow: var(--shadow-sm);
+}
+
+.booking-form__grid {
+    display: grid;
+    gap: var(--space-5);
+}
+
+.booking-form__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+@media (max-width: 600px) {
+    .booking-form__row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Plate Input — Special Style */
+.plate-input {
+    text-align: center;
+    font-size: var(--font-size-xl) !important;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: var(--space-4) var(--space-5) !important;
+    min-height: 56px !important;
+}
+
+/* Service Package Cards */
+.service-packages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: var(--space-3);
+}
+
+.service-card {
+    position: relative;
+    padding: var(--space-5);
+    background: var(--bg-surface);
+    border: 2px solid transparent;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    text-align: center;
+}
+
+.service-card:hover {
+    background: var(--bg-surface-hover);
+}
+
+.service-card.selected {
+    border-color: var(--accent-primary);
+    background: var(--accent-primary-dim);
+}
+
+.service-card__icon {
+    font-size: 28px;
+    margin-bottom: var(--space-2);
+}
+
+.service-card__name {
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    margin-bottom: 2px;
+}
+
+.service-card__desc {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-3);
+    line-height: 1.4;
+}
+
+.service-card__price {
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.service-card__price small {
+    font-size: var(--font-size-xs);
+    font-weight: 400;
+    color: var(--text-muted);
+}
+
+.service-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Time Slot Grid */
+.timeslot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: var(--space-2);
+}
+
+.timeslot {
+    padding: var(--space-3);
+    background: var(--bg-surface);
+    border: 1.5px solid transparent;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-weight: 500;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.timeslot:hover:not(.timeslot--full) {
+    background: var(--bg-surface-hover);
+}
+
+.timeslot.selected {
+    background: var(--accent-primary);
+    color: white;
+    border-color: var(--accent-primary);
+}
+
+.timeslot--full {
+    opacity: 0.35;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+
+/* Footer */
+.footer {
+    padding: var(--space-10) 0 var(--space-6);
+    border-top: var(--border-subtle);
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.footer__info {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-4);
+    font-size: var(--font-size-sm);
+}
+
+.footer__info-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.footer__copy {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+}
