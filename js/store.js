@@ -1,148 +1,206 @@
 /* ============================================
-   BM's Auto Spa — Shared Data Store & Utilities
+   BM's Auto Spa — Data Store (Supabase)
    ============================================ */
+import { supabase } from './supabase.js';
 
-// ---- Default Service Packages ----
-const DEFAULT_PACKAGES = [
-    {
-        id: 'basic',
-        name: 'Basic Wash',
-        icon: '💧',
-        desc: 'Exterior wash, rinse & dry',
-        prices: { Sedan: 25, SUV: 35, MPV: 35, 'Luxury/Large': 45 },
-        active: true,
-    },
-    {
-        id: 'standard',
-        name: 'Standard Wash',
-        icon: '🚿',
-        desc: 'Exterior + interior vacuum & wipe-down',
-        prices: { Sedan: 40, SUV: 55, MPV: 55, 'Luxury/Large': 70 },
-        active: true,
-    },
-    {
-        id: 'premium',
-        name: 'Premium Detail',
-        icon: '✨',
-        desc: 'Full detail: wash, vacuum, polish & tyre shine',
-        prices: { Sedan: 80, SUV: 100, MPV: 100, 'Luxury/Large': 130 },
-        active: true,
-    },
-    {
-        id: 'interior',
-        name: 'Interior Only',
-        icon: '🧹',
-        desc: 'Deep interior vacuum, dashboard & seats',
-        prices: { Sedan: 50, SUV: 65, MPV: 65, 'Luxury/Large': 80 },
-        active: true,
-    },
-];
+// ---- Packages ----
+export async function getPackages() {
+    const { data, error } = await supabase
+        .from('service_packages')
+        .select('*')
+        .order('sort_order');
+    if (error) { console.error('getPackages error:', error); return []; }
+    // Map DB columns to the shape the frontend expects
+    return data.map(mapPackage);
+}
 
-// ---- Default Settings ----
-const DEFAULT_SETTINGS = {
-    operatingHours: { open: '08:00', close: '18:00' },
-    slotDurationMinutes: 60,
-    maxCarsPerSlot: 4,
-};
-
-// ---- Default Users ----
-const DEFAULT_USERS = [
-    { username: 'admin', password: 'admin123', role: 'admin', name: 'Boss Man' },
-    { username: 'worker', password: 'worker123', role: 'worker', name: 'Ali' },
-];
-
-// ---- Storage Keys ----
-const KEYS = {
-    bookings: 'bms_bookings',
-    packages: 'bms_packages',
-    settings: 'bms_settings',
-    users: 'bms_users',
-    session: 'bms_session',
-};
-
-// ---- Init Defaults ----
-export function initDefaults() {
-    if (!localStorage.getItem(KEYS.packages)) {
-        localStorage.setItem(KEYS.packages, JSON.stringify(DEFAULT_PACKAGES));
-    }
-    if (!localStorage.getItem(KEYS.settings)) {
-        localStorage.setItem(KEYS.settings, JSON.stringify(DEFAULT_SETTINGS));
-    }
-    if (!localStorage.getItem(KEYS.users)) {
-        localStorage.setItem(KEYS.users, JSON.stringify(DEFAULT_USERS));
-    }
-    if (!localStorage.getItem(KEYS.bookings)) {
-        localStorage.setItem(KEYS.bookings, JSON.stringify([]));
+export async function savePackage(pkg) {
+    const row = {
+        name: pkg.name,
+        icon: pkg.icon || '🚗',
+        description: pkg.desc || pkg.description || '',
+        price_sedan: pkg.prices?.Sedan ?? pkg.price_sedan ?? 0,
+        price_suv: pkg.prices?.SUV ?? pkg.price_suv ?? 0,
+        price_mpv: pkg.prices?.MPV ?? pkg.price_mpv ?? 0,
+        price_luxury: pkg.prices?.['Luxury/Large'] ?? pkg.price_luxury ?? 0,
+        is_active: pkg.active ?? pkg.is_active ?? true,
+        sort_order: pkg.sort_order ?? 0,
+    };
+    if (pkg.id) {
+        const { error } = await supabase.from('service_packages').update(row).eq('id', pkg.id);
+        if (error) console.error('savePackage update error:', error);
+    } else {
+        const { error } = await supabase.from('service_packages').insert(row);
+        if (error) console.error('savePackage insert error:', error);
     }
 }
 
-// ---- CRUD Helpers ----
-export function getPackages() {
-    return JSON.parse(localStorage.getItem(KEYS.packages) || '[]');
-}
-export function savePackages(packages) {
-    localStorage.setItem(KEYS.packages, JSON.stringify(packages));
+export async function togglePackageActive(id, isActive) {
+    const { error } = await supabase.from('service_packages').update({ is_active: isActive }).eq('id', id);
+    if (error) console.error('togglePackageActive error:', error);
 }
 
-export function getSettings() {
-    return JSON.parse(localStorage.getItem(KEYS.settings) || '{}');
-}
-export function saveSettings(settings) {
-    localStorage.setItem(KEYS.settings, JSON.stringify(settings));
-}
-
-export function getBookings() {
-    return JSON.parse(localStorage.getItem(KEYS.bookings) || '[]');
-}
-export function saveBookings(bookings) {
-    localStorage.setItem(KEYS.bookings, JSON.stringify(bookings));
-}
-
-export function addBooking(booking) {
-    const bookings = getBookings();
-    booking.id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-    booking.createdAt = new Date().toISOString();
-    bookings.push(booking);
-    saveBookings(bookings);
-    return booking;
+function mapPackage(row) {
+    return {
+        id: row.id,
+        name: row.name,
+        icon: row.icon,
+        desc: row.description,
+        prices: {
+            Sedan: row.price_sedan,
+            SUV: row.price_suv,
+            MPV: row.price_mpv,
+            'Luxury/Large': row.price_luxury,
+        },
+        active: row.is_active,
+        sort_order: row.sort_order,
+    };
 }
 
-export function updateBooking(id, updates) {
-    const bookings = getBookings();
-    const idx = bookings.findIndex(b => b.id === id);
-    if (idx !== -1) {
-        bookings[idx] = { ...bookings[idx], ...updates };
-        saveBookings(bookings);
-        return bookings[idx];
+// ---- Settings ----
+export async function getSettings() {
+    const { data, error } = await supabase.from('settings').select('*');
+    if (error) { console.error('getSettings error:', error); return getDefaultSettings(); }
+    // Flatten key-value rows into a single object
+    const settings = {};
+    for (const row of data) {
+        settings[row.key] = row.value;
     }
-    return null;
+    return {
+        operatingHours: settings.operating_hours || { open: '08:00', close: '18:00' },
+        maxCarsPerSlot: settings.max_cars_per_slot || 4,
+        slotDurationMinutes: settings.slot_duration_minutes || 60,
+    };
 }
 
-export function deleteBooking(id) {
-    const bookings = getBookings().filter(b => b.id !== id);
-    saveBookings(bookings);
+function getDefaultSettings() {
+    return {
+        operatingHours: { open: '08:00', close: '18:00' },
+        maxCarsPerSlot: 4,
+        slotDurationMinutes: 60,
+    };
+}
+
+export async function saveSettings(settings) {
+    const updates = [
+        { key: 'operating_hours', value: settings.operatingHours },
+        { key: 'max_cars_per_slot', value: settings.maxCarsPerSlot },
+        { key: 'slot_duration_minutes', value: settings.slotDurationMinutes },
+    ];
+    for (const u of updates) {
+        const { error } = await supabase
+            .from('settings')
+            .update({ value: u.value, updated_at: new Date().toISOString() })
+            .eq('key', u.key);
+        if (error) console.error('saveSettings error:', error);
+    }
+}
+
+// ---- Bookings ----
+export async function getBookings(filters = {}) {
+    let query = supabase.from('bookings').select('*');
+    if (filters.date) query = query.eq('booking_date', filters.date);
+    if (filters.status) query = query.eq('status', filters.status);
+    if (filters.plateNumber) {
+        query = query.ilike('plate_number', `%${filters.plateNumber.replace(/\s/g, '')}%`);
+    }
+    query = query.order('created_at', { ascending: false });
+    const { data, error } = await query;
+    if (error) { console.error('getBookings error:', error); return []; }
+    return data.map(mapBooking);
+}
+
+export async function getBookingsByDate(date) {
+    return getBookings({ date });
+}
+
+export async function getBookingByPlate(plate) {
+    const cleanPlate = plate.replace(/\s/g, '');
+    const { data, error } = await supabase
+        .from('bookings')
+        .select('*')
+        .order('created_at', { ascending: false });
+    if (error) { console.error('getBookingByPlate error:', error); return null; }
+    // Client-side plate matching (ignoring spaces)
+    const match = data.find(b => b.plate_number.replace(/\s/g, '') === cleanPlate);
+    return match ? mapBooking(match) : null;
+}
+
+export async function addBooking(booking) {
+    const row = {
+        plate_number: booking.plateNumber,
+        vehicle_type: booking.vehicleType,
+        package_id: booking.packageId || null,
+        package_name: booking.packageName,
+        booking_date: booking.date,
+        time_slot: booking.timeSlot,
+        customer_name: booking.customerName || '',
+        customer_phone: booking.customerPhone || '',
+        price: booking.price,
+        status: booking.status || 'Pending',
+        payment_method: booking.paymentMethod || null,
+    };
+    const { data, error } = await supabase.from('bookings').insert(row).select().single();
+    if (error) { console.error('addBooking error:', error); return null; }
+    return mapBooking(data);
+}
+
+export async function updateBooking(id, updates) {
+    const row = {};
+    if (updates.status !== undefined) row.status = updates.status;
+    if (updates.paymentMethod !== undefined) row.payment_method = updates.paymentMethod;
+    if (updates.paidAt !== undefined) row.paid_at = updates.paidAt;
+    const { data, error } = await supabase.from('bookings').update(row).eq('id', id).select().single();
+    if (error) { console.error('updateBooking error:', error); return null; }
+    return mapBooking(data);
+}
+
+export async function deleteBooking(id) {
+    const { error } = await supabase.from('bookings').delete().eq('id', id);
+    if (error) console.error('deleteBooking error:', error);
+}
+
+function mapBooking(row) {
+    return {
+        id: row.id,
+        plateNumber: row.plate_number,
+        vehicleType: row.vehicle_type,
+        packageId: row.package_id,
+        packageName: row.package_name,
+        date: row.booking_date,
+        timeSlot: row.time_slot,
+        customerName: row.customer_name,
+        customerPhone: row.customer_phone,
+        price: row.price,
+        status: row.status,
+        paymentMethod: row.payment_method,
+        paidAt: row.paid_at,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at,
+    };
 }
 
 // ---- Slot Availability ----
-export function getAvailableSlots(date) {
-    const settings = getSettings();
+export async function getAvailableSlots(date) {
+    const settings = await getSettings();
     const { open, close } = settings.operatingHours;
     const maxCars = settings.maxCarsPerSlot;
     const duration = settings.slotDurationMinutes;
 
-    const slots = [];
     const [openH, openM] = open.split(':').map(Number);
     const [closeH, closeM] = close.split(':').map(Number);
     const startMin = openH * 60 + openM;
     const endMin = closeH * 60 + closeM;
 
-    const bookings = getBookings().filter(b => b.date === date);
+    // Get bookings for that date
+    const bookings = await getBookingsByDate(date);
 
+    const slots = [];
     for (let t = startMin; t + duration <= endMin; t += duration) {
         const h = Math.floor(t / 60).toString().padStart(2, '0');
         const m = (t % 60).toString().padStart(2, '0');
         const slotTime = `${h}:${m}`;
-        const count = bookings.filter(b => b.timeSlot === slotTime).length;
+        const count = bookings.filter(b => b.timeSlot === slotTime || b.timeSlot === `${slotTime}:00`).length;
         slots.push({
             time: slotTime,
             label: formatTime(slotTime),
@@ -155,28 +213,50 @@ export function getAvailableSlots(date) {
 }
 
 // ---- Auth ----
-export function login(username, password) {
-    const users = JSON.parse(localStorage.getItem(KEYS.users) || '[]');
-    const user = users.find(u => u.username === username && u.password === password);
-    if (user) {
-        const session = { username: user.username, role: user.role, name: user.name };
-        localStorage.setItem(KEYS.session, JSON.stringify(session));
-        return session;
-    }
-    return null;
+export async function login(email, password) {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) { console.error('login error:', error); return null; }
+    // Fetch profile
+    const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', data.user.id)
+        .single();
+    if (profileError) { console.error('profile fetch error:', profileError); return null; }
+    return {
+        id: data.user.id,
+        email: data.user.email,
+        username: profile.username,
+        role: profile.role,
+        name: profile.name,
+    };
 }
 
-export function getSession() {
-    const raw = localStorage.getItem(KEYS.session);
-    return raw ? JSON.parse(raw) : null;
+export async function getSession() {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (error || !session) return null;
+    // Fetch profile
+    const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+    if (profileError) return null;
+    return {
+        id: session.user.id,
+        email: session.user.email,
+        username: profile.username,
+        role: profile.role,
+        name: profile.name,
+    };
 }
 
-export function logout() {
-    localStorage.removeItem(KEYS.session);
+export async function logout() {
+    await supabase.auth.signOut();
 }
 
-export function requireAuth(requiredRole) {
-    const session = getSession();
+export async function requireAuth(requiredRole) {
+    const session = await getSession();
     if (!session) {
         window.location.href = '/pages/login.html';
         return null;
@@ -190,7 +270,10 @@ export function requireAuth(requiredRole) {
 
 // ---- Utility ----
 export function formatTime(timeStr) {
-    const [h, m] = timeStr.split(':').map(Number);
+    // Handle both "HH:MM" and "HH:MM:SS" formats
+    const parts = timeStr.split(':');
+    const h = parseInt(parts[0]);
+    const m = parseInt(parts[1]);
     const ampm = h >= 12 ? 'PM' : 'AM';
     const h12 = h % 12 || 12;
     return `${h12}:${m.toString().padStart(2, '0')} ${ampm}`;
@@ -222,10 +305,6 @@ export function showToast(message, type = 'info') {
         toast.style.animation = 'toastOut 0.3s ease-out forwards';
         setTimeout(() => toast.remove(), 300);
     }, 3000);
-}
-
-export function generateId() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 }
 
 // Status flow
