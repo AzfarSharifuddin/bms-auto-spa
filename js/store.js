@@ -127,6 +127,20 @@ export async function getBookingByPlate(plate) {
 }
 
 export async function addBooking(booking) {
+    // Verify price server-side by looking up the actual package price
+    let verifiedPrice = booking.price;
+    if (booking.packageId) {
+        const { data: pkg } = await supabase
+            .from('service_packages')
+            .select('*')
+            .eq('id', booking.packageId)
+            .single();
+        if (pkg) {
+            const priceKey = 'price_' + booking.vehicleType.toLowerCase().replace('/', '_').replace('luxury_large', 'luxury');
+            const priceMap = { Sedan: pkg.price_sedan, SUV: pkg.price_suv, MPV: pkg.price_mpv, 'Luxury/Large': pkg.price_luxury };
+            verifiedPrice = priceMap[booking.vehicleType] ?? booking.price;
+        }
+    }
     const row = {
         plate_number: booking.plateNumber,
         vehicle_type: booking.vehicleType,
@@ -136,7 +150,7 @@ export async function addBooking(booking) {
         time_slot: booking.timeSlot,
         customer_name: booking.customerName || '',
         customer_phone: booking.customerPhone || '',
-        price: booking.price,
+        price: verifiedPrice,
         status: booking.status || 'Pending',
         payment_method: booking.paymentMethod || null,
     };
@@ -269,6 +283,27 @@ export async function requireAuth(requiredRole) {
 }
 
 // ---- Utility ----
+
+// HTML sanitizer — prevents XSS when rendering user data via innerHTML
+export function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = String(str);
+    return div.innerHTML;
+}
+
+// Input validation
+export function isValidPlate(plate) {
+    // Allow Malaysian-style plates: letters + digits, with optional spaces
+    return /^[A-Z]{1,3}\s?\d{1,4}(\s?[A-Z]{0,3})?$/.test(plate.trim().toUpperCase());
+}
+
+export function isValidPhone(phone) {
+    // Malaysian phone: 01x-xxxxxxx or 01x xxxxxxx (10-11 digits)
+    const digits = phone.replace(/[\s\-]/g, '');
+    return /^01\d{8,9}$/.test(digits);
+}
+
 export function formatTime(timeStr) {
     // Handle both "HH:MM" and "HH:MM:SS" formats
     const parts = timeStr.split(':');

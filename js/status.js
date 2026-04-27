@@ -1,4 +1,4 @@
-import { getBookingByPlate, formatDate, formatTime, STATUS_FLOW } from './store.js';
+import { getBookingByPlate, formatDate, formatTime, STATUS_FLOW, escapeHtml } from './store.js';
 
 const searchInput = document.getElementById('plateSearch');
 const searchBtn = document.getElementById('searchBtn');
@@ -20,7 +20,7 @@ async function search() {
     resultDiv.innerHTML = `
       <div class="status-empty">
         <div class="status-empty__icon">🔍</div>
-        <p class="status-empty__text">No booking found for <strong>${plate}</strong></p>
+        <p class="status-empty__text">No booking found for <strong>${escapeHtml(plate)}</strong></p>
         <a href="/" class="btn btn--primary" style="margin-top: var(--space-2);">Book Now</a>
       </div>
     `;
@@ -46,17 +46,17 @@ async function search() {
     <div class="status-result">
       <div class="card">
         <div class="status-result__header">
-          <div class="status-result__plate">${booking.plateNumber}</div>
+          <div class="status-result__plate">${escapeHtml(booking.plateNumber)}</div>
           <span class="badge badge--${booking.status.toLowerCase()}">${booking.status}</span>
         </div>
         <div class="status-result__details">
           <div class="status-result__detail">
             <span class="status-result__label">Service</span>
-            <span class="status-result__value">${booking.packageName}</span>
+            <span class="status-result__value">${escapeHtml(booking.packageName)}</span>
           </div>
           <div class="status-result__detail">
             <span class="status-result__label">Vehicle</span>
-            <span class="status-result__value">${booking.vehicleType}</span>
+            <span class="status-result__value">${escapeHtml(booking.vehicleType)}</span>
           </div>
           <div class="status-result__detail">
             <span class="status-result__label">Date</span>

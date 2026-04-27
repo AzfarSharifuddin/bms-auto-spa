@@ -1,4 +1,4 @@
-import { getPackages, getAvailableSlots, addBooking, formatTime, formatDate, todayStr, showToast } from './store.js';
+import { getPackages, getAvailableSlots, addBooking, formatTime, formatDate, todayStr, showToast, escapeHtml, isValidPlate, isValidPhone } from './store.js';
 
 const form = document.getElementById('bookingForm');
 const pkgContainer = document.getElementById('servicePackages');
@@ -110,6 +110,18 @@ form.addEventListener('submit', async (e) => {
     return;
   }
 
+  const plateVal = plateInput.value.trim().toUpperCase();
+  if (!isValidPlate(plateVal)) {
+    showToast('Please enter a valid Malaysian plate number (e.g. WXY 1234).', 'error');
+    return;
+  }
+
+  const phoneVal = document.getElementById('customerPhone').value.trim();
+  if (phoneVal && !isValidPhone(phoneVal)) {
+    showToast('Please enter a valid Malaysian phone number (e.g. 012-3456789).', 'error');
+    return;
+  }
+
   const pkg = packagesCache.find(p => p.id === selectedPackage);
   const price = pkg.prices[vehicleSelect.value] || pkg.prices['Sedan'];
 
@@ -144,9 +156,9 @@ form.addEventListener('submit', async (e) => {
   confirmBody.innerHTML = `
     <p>Your booking has been confirmed!</p>
     <div style="margin-top:var(--space-4); padding:var(--space-4); background:var(--bg-surface); border-radius:var(--radius-md); text-align:left;">
-      <div style="margin-bottom:8px;"><strong>${booking.plateNumber}</strong></div>
+      <div style="margin-bottom:8px;"><strong>${escapeHtml(booking.plateNumber)}</strong></div>
       <div style="font-size:var(--font-size-sm); color:var(--text-secondary);">
-        ${pkg.name} · ${booking.vehicleType}<br>
+        ${escapeHtml(pkg.name)} · ${escapeHtml(booking.vehicleType)}<br>
         ${formatDate(booking.date)} at ${formatTime(booking.timeSlot)}<br>
         <strong>RM ${price}</strong>
       </div>

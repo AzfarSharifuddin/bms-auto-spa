@@ -2,7 +2,7 @@ import {
   requireAuth, logout,
   getBookings, getBookingsByDate, addBooking, updateBooking, getPackages,
   todayStr, formatDate, formatTime, showToast,
-  STATUS_FLOW, getNextStatus, statusToClass
+  STATUS_FLOW, getNextStatus, statusToClass, escapeHtml
 } from './store.js';
 
 (async () => {
@@ -116,18 +116,18 @@ import {
         <div class="queue-card" data-id="${b.id}">
           <div class="queue-card__top">
             <div>
-              <div class="queue-card__plate">${b.plateNumber}</div>
-              <div class="queue-card__service"><strong>${b.packageName}</strong> · RM ${b.price}</div>
+              <div class="queue-card__plate">${escapeHtml(b.plateNumber)}</div>
+              <div class="queue-card__service"><strong>${escapeHtml(b.packageName)}</strong> · RM ${b.price}</div>
             </div>
             <div class="queue-card__meta">
-              <span class="queue-card__tag">${b.vehicleType}</span>
+              <span class="queue-card__tag">${escapeHtml(b.vehicleType)}</span>
               <span class="badge badge--${statusToClass(b.status)}">${b.status}</span>
             </div>
           </div>
           <div class="queue-card__info">
             <span class="queue-card__info-item">🕐 ${formatTime(b.timeSlot)}</span>
-            ${b.customerName ? `<span class="queue-card__info-item">👤 ${b.customerName}</span>` : ''}
-            ${b.customerPhone ? `<span class="queue-card__info-item">📞 ${b.customerPhone}</span>` : ''}
+            ${b.customerName ? `<span class="queue-card__info-item">👤 ${escapeHtml(b.customerName)}</span>` : ''}
+            ${b.customerPhone ? `<span class="queue-card__info-item">📞 ${escapeHtml(b.customerPhone)}</span>` : ''}
           </div>
           ${nextStatus ? `
             <div class="queue-card__actions">
@@ -159,7 +159,7 @@ import {
     if (newStatus === 'Paid') {
       pendingPaymentId = id;
       const booking = todayBookings.find(b => b.id === id);
-      paymentInfo.innerHTML = `<strong>${booking.plateNumber}</strong> — ${booking.packageName}<br>Amount: <strong>RM ${booking.price}</strong>`;
+      paymentInfo.innerHTML = `<strong>${escapeHtml(booking.plateNumber)}</strong> — ${escapeHtml(booking.packageName)}<br>Amount: <strong>RM ${booking.price}</strong>`;
       paymentModal.classList.add('open');
 
       paymentModal.querySelectorAll('.service-card').forEach(card => {

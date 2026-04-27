@@ -3,7 +3,7 @@ import {
   getBookings, getBookingsByDate, deleteBooking, updateBooking,
   getPackages, savePackage, togglePackageActive,
   getSettings, saveSettings,
-  todayStr, formatDate, formatTime, showToast,
+  todayStr, formatDate, formatTime, showToast, escapeHtml,
 } from './store.js';
 
 (async () => {
@@ -154,10 +154,10 @@ import {
       ? '<tr><td colspan="6" style="text-align:center; padding:var(--space-8); color:var(--text-muted);">No records found</td></tr>'
       : bookings.map(b => `
       <tr>
-        <td><strong>${b.plateNumber}</strong></td>
-        <td>${b.packageName}</td>
+        <td><strong>${escapeHtml(b.plateNumber)}</strong></td>
+        <td>${escapeHtml(b.packageName)}</td>
         <td>RM ${b.price}</td>
-        <td>${b.paymentMethod || '-'}</td>
+        <td>${escapeHtml(b.paymentMethod || '-')}</td>
         <td>${formatDate(b.date)}</td>
         <td><span class="badge badge--paid">Paid</span></td>
       </tr>
@@ -177,8 +177,8 @@ import {
     const packages = await getPackages();
     document.getElementById('servicesTable').innerHTML = packages.map(pkg => `
       <tr>
-        <td>${pkg.icon}</td>
-        <td><strong>${pkg.name}</strong><br><span style="font-size:var(--font-size-xs); color:var(--text-muted);">${pkg.desc}</span></td>
+        <td>${escapeHtml(pkg.icon)}</td>
+        <td><strong>${escapeHtml(pkg.name)}</strong><br><span style="font-size:var(--font-size-xs); color:var(--text-muted);">${escapeHtml(pkg.desc)}</span></td>
         <td>RM ${pkg.prices.Sedan}</td>
         <td>RM ${pkg.prices.SUV}</td>
         <td>RM ${pkg.prices.MPV}</td>
@@ -300,9 +300,9 @@ import {
       ? '<tr><td colspan="7" style="text-align:center; padding:var(--space-8); color:var(--text-muted);">No records found</td></tr>'
       : bookings.map(b => `
       <tr>
-        <td><strong>${b.plateNumber}</strong></td>
-        <td>${b.customerName || '-'}</td>
-        <td>${b.packageName}</td>
+        <td><strong>${escapeHtml(b.plateNumber)}</strong></td>
+        <td>${escapeHtml(b.customerName || '-')}</td>
+        <td>${escapeHtml(b.packageName)}</td>
         <td>RM ${b.price}</td>
         <td>${formatDate(b.date)}</td>
         <td><span class="badge badge--${b.status.toLowerCase()}">${b.status}</span></td>
